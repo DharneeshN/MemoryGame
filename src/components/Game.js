@@ -62,7 +62,7 @@ function Game() {
         setTimeout(() => {
           setIncorrectMoves((prev) => prev + 1);
           setOpenCards([]);
-        }, 500);
+        }, 1000);
       }
     }
   }, [openCards, cardValues]);
