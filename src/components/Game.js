@@ -47,7 +47,7 @@ function Game() {
     if (correctedCards.length === cardValues?.length / 2) {
       setIsWin(true);
     }
-  }, [correctedCards]);
+  }, [correctedCards, cardValues]);
 
   useEffect(() => {
     if (openCards.length === 2) {

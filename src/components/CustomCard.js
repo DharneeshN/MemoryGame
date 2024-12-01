@@ -1,5 +1,5 @@
-import { Card, CardContent, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import { Card, CardContent } from "@mui/material";
+import React from "react";
 
 function CustomCard(props) {
   const { value, index, onClick, isFlipped } = props;
@@ -9,7 +9,6 @@ function CustomCard(props) {
     txt.innerHTML = html;
     return txt.value;
   }
-  console.log(isFlipped);
 
   return (
     <>
