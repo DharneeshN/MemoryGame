@@ -2,28 +2,24 @@ import React, { useEffect, useState } from "react";
 import CustomCard from "./CustomCard";
 import { data } from "./data";
 import { Box, Grid } from "@mui/system";
+import { Button, Typography } from "@mui/material";
+import ConfettiExplosion from "react-confetti-explosion";
 
 function Game() {
   const [cardValues, setCardValues] = useState(null);
   const [openCards, setOpenCards] = useState([]);
   const [correctedCards, setCorrectedCards] = useState([]);
-  const [flipToMemorize, setFlipToMemorize] = useState(true);
-  const [successMessage, setSuccessMessage] = useState(false);
-  console.log(cardValues, correctedCards.length, "correctedCards");
+  const [flipToMemorize, setFlipToMemorize] = useState(false);
+  const [isWin, setIsWin] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(false);
 
-  useEffect(() => {
-    setCardValues(shuffleArray(data));
-    setTimeout(() => {
-      setFlipToMemorize(false);
-    }, 1000);
-  }, []);
-  // console.log(cardValues / 2, "ds");
-
-  useEffect(() => {
-    if (correctedCards.length === cardValues?.length / 2) {
-      setSuccessMessage(true);
-    }
-  }, [correctedCards]);
+  const bigExplodeProps = {
+    force: 0.6,
+    duration: 5000,
+    particleCount: 200,
+    floorHeight: 1600,
+    floorWidth: 1600,
+  };
 
   function shuffleArray(datas) {
     let options = datas.flatMap((i) => [i, i]);
@@ -36,20 +32,22 @@ function Game() {
     return options;
   }
 
-  const handleClick = (value) => {
-    if (openCards.length === 1) {
-      setOpenCards((prev) => [...prev, value]);
-    } else {
-      setOpenCards([value]);
-    }
-  };
+  useEffect(() => {
+    setCardValues(shuffleArray(data));
+    setCorrectedCards([]);
+    setOpenCards([]);
+    setIsWin(false);
+    setFlipToMemorize(false);
+    setTimeout(() => {
+      setFlipToMemorize(true);
+    }, 2000);
+  }, [resetTrigger]);
 
-  const checkIsFlipped = (index) => {
-    return (
-      correctedCards.flatMap((val) => val).includes(index) ||
-      openCards.flatMap((val) => val).includes(index)
-    );
-  };
+  useEffect(() => {
+    if (correctedCards.length === cardValues?.length / 2) {
+      setIsWin(true);
+    }
+  }, [correctedCards]);
 
   useEffect(() => {
     if (openCards.length === 2) {
@@ -63,33 +61,94 @@ function Game() {
         }, 1000);
       }
     }
-  }, [openCards]);
+  }, [openCards, cardValues]);
+
+  const checkIsFlipped = (index) => {
+    return (
+      correctedCards.flatMap((val) => val).includes(index) ||
+      openCards.flatMap((val) => val).includes(index)
+    );
+  };
+
+  const handleClick = (value) => {
+    if (correctedCards.flat().includes(value) || openCards.includes(value)) {
+      return;
+    }
+    setOpenCards((prev) => (prev.length === 1 ? [...prev, value] : [value]));
+  };
+
+  const handleRetry = () => {
+    setResetTrigger((prev) => !prev);
+  };
 
   return (
-    <div>
-      {successMessage && <h1>namma jeichitom maara</h1>}
-      <Box
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#282c34",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 2,
+      }}
+    >
+      <Typography
+        variant="h3"
         sx={{
-          width: 250,
-          height: 20,
-          borderRadius: 1,
+          marginBottom: 3,
+          fontFamily: "Monospace",
         }}
       >
+        Memory Game
+      </Typography>
+      {isWin && (
+        <>
+          <ConfettiExplosion {...bigExplodeProps} />
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#4caf50",
+              animation: "fadeIn 2s ease-in-out",
+              marginTop: 3,
+            }}
+          >
+            You Win! 🎉
+          </Typography>
+        </>
+      )}
+      <Box sx={{ width: 250, height: 100, marginTop: 10 }}>
         <Grid container spacing={2}>
-          {cardValues?.map((val, index) => {
-            return (
-              <CustomCard
-                key={index}
-                value={val}
-                onClick={handleClick}
-                index={index}
-                isFlipped={checkIsFlipped(index) || flipToMemorize}
-              />
-            );
-          })}
+          {cardValues?.map((val, index) => (
+            <CustomCard
+              key={index}
+              value={val}
+              onClick={handleClick}
+              index={index}
+              isFlipped={!checkIsFlipped(index) && flipToMemorize}
+            />
+          ))}
         </Grid>
       </Box>
-    </div>
+      {isWin && (
+        <Button
+          variant="text"
+          size="small"
+          onClick={handleRetry}
+          sx={{
+            marginTop: 15,
+            fontSize: "1.25rem",
+            backgroundColor: "#1976d2",
+            color: "#fff",
+            borderRadius: "50%",
+            width: "60px",
+            height: "60px",
+          }}
+        >
+          ⟳
+        </Button>
+      )}
+    </Box>
   );
 }
 
