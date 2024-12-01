@@ -1,9 +1,11 @@
 .win {
-  animation: fadeIn 2s ease-in-out;
   font-size: 1.5rem;
+  color: #FFD700;
+  animation: fadeIn 2s ease-in-out;
+  margin-top: 3;
   text-align: center;
-  color: #4caf50;
 }
+
 
 .card {
   perspective: 1000px;
@@ -42,6 +44,6 @@
 }
 
 .card-back {
-  background-color: #1b79f4;
+  background-color: rgb(41 84 77);
   transform: rotateY(180deg);
 }

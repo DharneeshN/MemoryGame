@@ -31,4 +31,14 @@ export const data = [
     name: "heart",
     image: "&#129505;",
   },
+  {
+    id: "7",
+    name: "monkey",
+    image: "&#128584",
+  },
+  {
+    id: "8",
+    name: "baba",
+    image: "&#x1F91F",
+  },
 ];
